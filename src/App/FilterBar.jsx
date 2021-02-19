@@ -16,7 +16,10 @@ const FilterBar = () => {
           </Grid.Column>
           <Grid.Column width={2}>
             {/* Filter On|Off Button */}
-            <Button icon onClick={() => setFilter(!isFilter)}>
+            <Button
+              icon
+              color={isFilter ? "grey" : "black"}
+              onClick={() => setFilter(!isFilter)}>
               <Icon name="filter" />
             </Button>
           </Grid.Column>

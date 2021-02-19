@@ -16,7 +16,7 @@ class HomePage extends Component {
       <div className="masthead home-page">
         <Grid className="width-100" stackable>
           <Grid.Row>
-            <Grid.Column width={4}>
+            <Grid.Column width={4} className="right-border">
               <FilterBar />
             </Grid.Column>
             <Grid.Column width={12}>

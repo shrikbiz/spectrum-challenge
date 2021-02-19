@@ -53,3 +53,7 @@ body {
   padding-top: 4%;
   padding-bottom: 2%;
 }
+
+.right-border {
+  border-right: grey 0.5px dotted;
+}
