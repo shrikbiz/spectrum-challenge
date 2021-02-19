@@ -7,31 +7,27 @@ import axios from "axios";
 
 class App extends Component {
   state = { apiData: [] };
+
+  //API fetching
   async componentDidMount() {
-    let resp;
     try {
-      resp = await axios.get(
+      let resp = await axios.get(
         "https://code-challenge.spectrumtoolbox.com/api/restaurants",
         {
           headers: { authorization: "Api-Key q3MNxtfep8Gt" },
         }
       );
+      // assigning resp to apiData in try catch, so that apiData remains an array
+      this.setState({ apiData: resp.data });
     } catch (err) {
       console.log(err);
     }
-    console.log(
-      "🚀 ~ file: HomePage.jsx ~ line 25 ~ HomePage ~ componentDidMount ~ resp",
-      resp
-    );
-
-    this.setState({ apiData: resp.data });
   }
   render() {
     return (
       <Fragment>
         <NavBar />
         <Route exact path="/" component={FrontPage} />
-
         <Route
           path="/(.+)"
           render={() => (
