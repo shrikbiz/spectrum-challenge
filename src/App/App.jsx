@@ -1,29 +1,48 @@
 import React, { Component, Fragment } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
-import Home from "./Home";
+import FrontPage from "./FrontPage";
 import NavBar from "./NavBar";
-import { Button } from "semantic-ui-react";
+import HomePage from "./HomePage";
+import axios from "axios";
 
 class App extends Component {
-  state = {};
+  state = { apiData: [] };
+  async componentDidMount() {
+    let resp;
+    try {
+      resp = await axios.get(
+        "https://code-challenge.spectrumtoolbox.com/api/restaurants",
+        {
+          headers: { authorization: "Api-Key q3MNxtfep8Gt" },
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(
+      "🚀 ~ file: HomePage.jsx ~ line 25 ~ HomePage ~ componentDidMount ~ resp",
+      resp
+    );
+
+    this.setState({ apiData: resp.data });
+  }
   render() {
     return (
-      <>
+      <Fragment>
         <NavBar />
-        <Route exact path="/" component={Home} />
-        <Button primary>Primary</Button>
+        <Route exact path="/" component={FrontPage} />
 
-        {/* <Route
+        <Route
           path="/(.+)"
           render={() => (
             <Fragment>
               <Switch key={this.props.location.key}>
-                <Route path="/events" component={Home} />
+                <Route path="/home" component={HomePage} />
               </Switch>
             </Fragment>
           )}
-        /> */}
-      </>
+        />
+      </Fragment>
     );
   }
 }

@@ -1,19 +1,26 @@
-import React, { Component } from "react";
-import { Container, Menu, Button } from "semantic-ui-react";
+import React, { Component, Fragment } from "react";
+import { Container, Menu, Grid } from "semantic-ui-react";
 import { NavLink, Link, withRouter } from "react-router-dom";
 
 class NavBar extends Component {
   render() {
     return (
-      <Menu inverted fixed="top">
-        {/* <Container> */}
-        <Menu.Item as={NavLink} exact to="/" header>
-          <b>Spectrum Challenge</b>
-        </Menu.Item>
-        <Menu.Item as={NavLink} exact to="/events" name="Events" />
-        <Menu.Item as={NavLink} exact to="/people" name="People" />
-        <Menu.Item as={NavLink} to="/test" name="Test" />
-        {/* <Menu.Item>
+      <Fragment>
+        <Menu inverted fixed="top">
+          <Container>
+            <Grid style={{ width: "100%" }}>
+              <Grid.Column floated="left" width={3}>
+                <Menu.Item as={NavLink} exact to="/" header>
+                  <b>Spectrum Challenge</b>
+                </Menu.Item>
+              </Grid.Column>
+              <Grid.Column floated="right" width={2}>
+                <Menu.Item as={NavLink} exact to="/home" name="Home Page" />
+              </Grid.Column>
+            </Grid>
+            {/* <Menu.Item as={NavLink} exact to="/people" name="People" />
+          <Menu.Item as={NavLink} to="/test" name="Test" />
+          <Menu.Item>
             <Button
               as={Link}
               to="/createEvent"
@@ -23,8 +30,9 @@ class NavBar extends Component {
               content="Create Event"
             />
           </Menu.Item> */}
-        {/* </Container> */}
-      </Menu>
+          </Container>
+        </Menu>
+      </Fragment>
     );
   }
 }
