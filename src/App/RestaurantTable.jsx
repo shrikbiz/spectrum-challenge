@@ -2,8 +2,14 @@ import React, { Component } from "react";
 import { Table, Menu, Icon } from "semantic-ui-react";
 
 class RestaurantTable extends Component {
-  state = {};
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { tableData: [], totalPages: 0 };
+  // }
+
   render() {
+    let { tableData } = this.props;
+    let { tableList, pageCount } = tableData;
     return (
       <>
         <div>
@@ -15,59 +21,16 @@ class RestaurantTable extends Component {
                 <Table.HeaderCell>Header</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
-
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell>First</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-                <Table.Cell>Cell</Table.Cell>
-              </Table.Row>
-            </Table.Body>
+            {console.log(tableList)}
+            {tableList.map((restaurant) => (
+              <Table.Body key={restaurant.id}>
+                <Table.Row>
+                  <Table.Cell>{restaurant.name}</Table.Cell>
+                  <Table.Cell></Table.Cell>
+                  <Table.Cell></Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            ))}
 
             <Table.Footer>
               <Table.Row>

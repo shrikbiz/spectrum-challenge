@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { Icon, Container, Grid, Button, Divider } from "semantic-ui-react";
+import { Icon, Grid, Button, Divider } from "semantic-ui-react";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
 
-const FilterBar = () => {
+const FilterBar = ({ genreList }) => {
   const [isFilter, setFilter] = useState(false);
+  function selectedGenre(value) {
+    console.log(value);
+  }
+  function selectedStates(value) {
+    console.log(value);
+  }
   return (
     <>
       <Grid className="width-100" stackable>
@@ -25,6 +31,7 @@ const FilterBar = () => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
+
       {isFilter ? (
         <>
           <Divider />
@@ -32,13 +39,26 @@ const FilterBar = () => {
             <Grid.Row>
               <Grid.Column>
                 {/* Genre */}
-                <Filter />
+                <Filter
+                  list={genreList}
+                  filterName="Genre"
+                  onFilterSelect={selectedGenre}
+                />
+                {console.log("in FilterBar", genreList)}
               </Grid.Column>
             </Grid.Row>
             <Grid.Row>
               <Grid.Column>
                 {/* state */}
-                <Filter />
+                <Filter
+                  list={[
+                    { key: 0, text: "Massachusetts", value: "massachusetts" },
+                    { key: 1, text: "Ohio", value: "ohio" },
+                    { key: 2, text: "Colorado", value: "colorado" },
+                  ]}
+                  filterName="State"
+                  onFilterSelect={selectedStates}
+                />
               </Grid.Column>
             </Grid.Row>
           </Grid>
