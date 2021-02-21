@@ -3,21 +3,29 @@ import { Icon, Grid, Button, Divider } from "semantic-ui-react";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
 
-const FilterBar = ({ genreList }) => {
+const FilterBox = ({
+  genreList,
+  onSearchBar,
+  onGenreFilter,
+  onStateFilter,
+}) => {
   const [isFilter, setFilter] = useState(false);
-  function selectedGenre(value) {
-    console.log(value);
-  }
-  function selectedStates(value) {
-    console.log(value);
-  }
+  const selectedGenre = (value) => {
+    onGenreFilter(value);
+  };
+  const selectedStates = (value) => {
+    onStateFilter(value);
+  };
+  const handleSearch = (value) => {
+    onSearchBar(value);
+  };
   return (
     <>
       <Grid className="width-100" stackable>
         <Grid.Row>
           <Grid.Column width={14}>
             {/* Search */}
-            <SearchBar />
+            <SearchBar onSearch={handleSearch} />
             <span>Press enter to Search</span>
           </Grid.Column>
           <Grid.Column width={2}>
@@ -25,7 +33,8 @@ const FilterBar = ({ genreList }) => {
             <Button
               icon
               color={isFilter ? "grey" : "black"}
-              onClick={() => setFilter(!isFilter)}>
+              onClick={() => setFilter(!isFilter)}
+            >
               <Icon name="filter" />
             </Button>
           </Grid.Column>
@@ -44,7 +53,6 @@ const FilterBar = ({ genreList }) => {
                   filterName="Genre"
                   onFilterSelect={selectedGenre}
                 />
-                {console.log("in FilterBar", genreList)}
               </Grid.Column>
             </Grid.Row>
             <Grid.Row>
@@ -71,4 +79,4 @@ const FilterBar = ({ genreList }) => {
   );
 };
 
-export default FilterBar;
+export default FilterBox;

@@ -28,7 +28,6 @@ class RestaurantTable extends Component {
               <Table.HeaderCell>Genre</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          {console.log(tableList)}
           <Table.Body>
             {tableList.map(
               ({ name, id, address1, city, state, telephone, genre }) => (
@@ -51,14 +50,16 @@ class RestaurantTable extends Component {
                     disabled={previousPageLimit}
                     onClick={onPreviousPage}
                     as="a"
-                    icon>
+                    icon
+                  >
                     <Icon name="chevron left" />
                   </Menu.Item>
                   <Menu.Item
                     disabled={nextPageLimit}
                     onClick={onNextPage}
                     as="a"
-                    icon>
+                    icon
+                  >
                     <Icon name="chevron right" />
                   </Menu.Item>
                 </Menu>

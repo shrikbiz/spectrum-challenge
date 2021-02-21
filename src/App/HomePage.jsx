@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { Icon, Container, Grid, Button, Divider } from "semantic-ui-react";
 import RestaurantTable from "./RestaurantTable";
-import FilterBar from "./FilterBar";
+import FilterBox from "./FilterBox";
 import axios from "axios";
 import { GetGenreList } from "./GetGenreList";
 
@@ -10,12 +10,9 @@ class HomePage extends Component {
   constructor() {
     super();
     this.state = {
-      //inital data from API
-      apiData: [],
-      //data after applying search and filters
-      filteredData: [],
-      //10 table display list as per page
-      displayTableList: [],
+      apiData: [], //inital data from API
+      filteredData: [], //data after applying search and filters
+      displayTableList: [], //10 table display list as per page
       genres: [],
       pageCountList: [],
       currentPage: 1,
@@ -32,31 +29,32 @@ class HomePage extends Component {
         }
       );
       // assigning resp to apiData in try catch, so that apiData remains an array
-      this.setState({ apiData: resp.data });
+      this.setState({ apiData: this.genreToList(resp.data) });
     } catch (err) {
       console.log(err);
     }
+    this.setState({ filteredData: this.state.apiData });
     this.getGenre();
-    this.allFilter();
     this.totalPage();
   }
+
+  genreToList = (apiData) => {
+    for (let item in apiData) {
+      apiData[item].genre = apiData[item].genre.split(",");
+    }
+    return apiData;
+  };
 
   getGenre = () => {
     //GetGenre is external function
     this.setState({ genre: GetGenreList(this.state.apiData) });
   };
 
-  addIndex = () => {
-    let { apiData } = this.state;
+  addIndex = (apiData) => {
     for (let index in apiData) {
       apiData[index].index = index;
     }
     return apiData;
-  };
-
-  allFilter = () => {
-    //apiData will be filtered before passing to state.filteredData
-    this.setState({ filteredData: this.addIndex() });
   };
 
   //total page counter
@@ -64,18 +62,18 @@ class HomePage extends Component {
     let { filteredData } = this.state;
     let totalPages = Math.floor(filteredData.length / 10);
     totalPages = filteredData.length % 10 ? totalPages + 1 : totalPages;
-    let pageList = Array.from(
+    const pageList = Array.from(
       Array(totalPages)
         .fill()
         .map((_, index) => 1 + index)
     );
-    this.setState({ pageCountList: pageList, currentPage: 1 });
+    this.setState({ pageCountList: pageList });
     //as many times totalPage is called, the tablePageData will become 0
-    this.tablePageData(1);
+    this.tablePageData(1, filteredData);
   };
 
-  tablePageData = (pageNumber) => {
-    let { filteredData } = this.state;
+  tablePageData = (pageNumber, filteredData) => {
+    this.setState({ currentPage: pageNumber });
     let firstItemIndex = pageNumber * 10 - 10;
     let pageListItem = [];
     let index = firstItemIndex;
@@ -91,14 +89,30 @@ class HomePage extends Component {
   handlePreviousPage = () => {
     let currentPage = this.state.currentPage - 1;
     this.setState({ currentPage: currentPage });
-    this.tablePageData(currentPage);
+    this.tablePageData(currentPage, this.state.filteredData);
   };
 
   handleNextPage = () => {
     let currentPage = this.state.currentPage + 1;
     this.setState({ currentPage: currentPage });
-    this.tablePageData(currentPage);
+    this.tablePageData(currentPage, this.state.filteredData);
   };
+
+  handleSearch = (value) => {
+    let { apiData } = this.state;
+    apiData = apiData.filter((data) => {
+      for (let genre of data.genre)
+        if (genre.toLowerCase().includes(value)) return true;
+      return (
+        data.name.toLowerCase().includes(value.toLowerCase()) ||
+        data.city.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    this.setState({ filteredData: apiData });
+    this.tablePageData(1, apiData);
+  };
+  handleGenreFilter = (value) => {};
+  handleStateFilter = (value) => {};
 
   render() {
     let { genre, displayTableList, pageCountList, currentPage } = this.state;
@@ -107,7 +121,12 @@ class HomePage extends Component {
         <Grid className="width-100" stackable>
           <Grid.Row>
             <Grid.Column width={4} className="right-border">
-              <FilterBar genreList={genre} />
+              <FilterBox
+                onSearchBar={this.handleSearch}
+                onGenreFilter={this.handleGenreFilter}
+                onStateFilter={this.handleStateFilter}
+                genreList={genre}
+              />
             </Grid.Column>
             <Grid.Column width={12}>
               <RestaurantTable
