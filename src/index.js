@@ -16,6 +16,7 @@ let render = () => {
     rootEl
   );
 };
+
 if (module.hot) {
   module.hot.accept("./App/App", () => {
     setTimeout(render);
