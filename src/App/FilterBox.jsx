@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Icon, Grid, Button, Divider } from "semantic-ui-react";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
+import { States } from "../helpers/usState";
 
 const FilterBox = ({
   genreList,
@@ -59,11 +60,7 @@ const FilterBox = ({
               <Grid.Column>
                 {/* state */}
                 <Filter
-                  list={[
-                    { key: 0, text: "Massachusetts", value: "massachusetts" },
-                    { key: 1, text: "Ohio", value: "ohio" },
-                    { key: 2, text: "Colorado", value: "colorado" },
-                  ]}
+                  list={States}
                   filterName="State"
                   onFilterSelect={selectedStates}
                 />

@@ -16,6 +16,9 @@ class HomePage extends Component {
       genres: [],
       pageCountList: [],
       currentPage: 1,
+      searchData: "", //stores searched value
+      genreFilter: [], //stores list of genre selected in filtered
+      stateFilter: [], //stores list of states selected in filtered
     };
   }
 
@@ -34,26 +37,13 @@ class HomePage extends Component {
       console.log(err);
     }
     this.setState({ filteredData: this.state.apiData });
-    this.getGenre();
+    this.setState({ genre: GetGenreList(this.state.apiData) });
     this.totalPage();
   }
 
   genreToList = (apiData) => {
-    for (let item in apiData) {
+    for (let item in apiData)
       apiData[item].genre = apiData[item].genre.split(",");
-    }
-    return apiData;
-  };
-
-  getGenre = () => {
-    //GetGenre is external function
-    this.setState({ genre: GetGenreList(this.state.apiData) });
-  };
-
-  addIndex = (apiData) => {
-    for (let index in apiData) {
-      apiData[index].index = index;
-    }
     return apiData;
   };
 
@@ -68,7 +58,6 @@ class HomePage extends Component {
         .map((_, index) => 1 + index)
     );
     this.setState({ pageCountList: pageList });
-    //as many times totalPage is called, the tablePageData will become 0
     this.tablePageData(1, filteredData);
   };
 
@@ -78,12 +67,73 @@ class HomePage extends Component {
     let pageListItem = [];
     let index = firstItemIndex;
     while (index < firstItemIndex + 10) {
-      if (filteredData[index]) {
-        pageListItem.push(filteredData[index]);
-      } else break;
+      if (filteredData[index]) pageListItem.push(filteredData[index]);
+      else break;
       index++;
     }
     this.setState({ displayTableList: pageListItem });
+  };
+
+  handleSearch = (value) => {
+    this.setState({ searchData: value });
+    this.handleFilters(value, false, false);
+  };
+
+  handleGenreFilter = (value) => {
+    this.setState({ genreFilter: value });
+    this.handleFilters(false, value, false);
+  };
+
+  handleStateFilter = (value) => {
+    this.setState({ stateFilter: value });
+    this.handleFilters(false, false, value);
+  };
+
+  handleFilters = (searchParam, genreParam, stateParam) => {
+    let { searchData, genreFilter, stateFilter } = this.state;
+    let { apiData } = this.state;
+
+    if (searchParam) searchData = searchParam;
+    else if (genreParam.length) genreFilter = genreParam;
+    else if (stateParam.length) stateFilter = stateParam;
+    console.log(
+      `🚀 -> HomePage -> searchData, genreFilter, stateFilter`,
+      searchData,
+      genreFilter,
+      stateFilter,
+      apiData.length
+    );
+
+    if (searchData) {
+      apiData = apiData.filter((data) => {
+        for (let genre of data.genre)
+          if (genre.toLowerCase().includes(searchData.toLowerCase()))
+            return true;
+        return (
+          data.name.toLowerCase().includes(searchData.toLowerCase()) ||
+          data.city.toLowerCase().includes(searchData.toLowerCase())
+        );
+      });
+    }
+    if (genreFilter.length) {
+      apiData = apiData.filter((data) => {
+        for (let genre of data.genre) {
+          for (let eachSelectedGenre of genreFilter)
+            if (genre.toLowerCase() === eachSelectedGenre.toLowerCase())
+              return true;
+        }
+        return false;
+      });
+      console.log(`🚀 -> HomePage -> genreFilter`, apiData);
+    }
+    if (stateFilter.length) {
+      apiData = apiData.filter(({ state }) => {
+        for (let selectedState of stateFilter)
+          if (selectedState.toLowerCase() === state.toLowerCase()) return true;
+        return false;
+      });
+    }
+    this.tablePageData(1, apiData);
   };
 
   handlePreviousPage = () => {
@@ -97,22 +147,6 @@ class HomePage extends Component {
     this.setState({ currentPage: currentPage });
     this.tablePageData(currentPage, this.state.filteredData);
   };
-
-  handleSearch = (value) => {
-    let { apiData } = this.state;
-    apiData = apiData.filter((data) => {
-      for (let genre of data.genre)
-        if (genre.toLowerCase().includes(value)) return true;
-      return (
-        data.name.toLowerCase().includes(value.toLowerCase()) ||
-        data.city.toLowerCase().includes(value.toLowerCase())
-      );
-    });
-    this.setState({ filteredData: apiData });
-    this.tablePageData(1, apiData);
-  };
-  handleGenreFilter = (value) => {};
-  handleStateFilter = (value) => {};
 
   render() {
     let { genre, displayTableList, pageCountList, currentPage } = this.state;
