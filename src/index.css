@@ -16,15 +16,16 @@ body {
   height: 100vh;
   color: white;
 }
-
-/* .masthead.segment {
-  min-height: 700px;
-  padding: 1em 0 !important;
-} */
-
-.masthead .ui.menu .ui.button,
-.ui.menu a.ui.inverted.button {
-  margin-left: 0.5em;
+.child-masthead {
+  display: flex;
+  background-image: linear-gradient(
+    135deg,
+    rgb(24, 42, 115) 0%,
+    rgb(33, 138, 174) 69%,
+    rgb(32, 167, 172) 89%
+  ) !important;
+  height: 100vh;
+  color: white;
 }
 
 .masthead h1.ui.header {

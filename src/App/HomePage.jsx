@@ -103,7 +103,7 @@ class HomePage extends Component {
   render() {
     let { genre, displayTableList, pageCountList, currentPage } = this.state;
     return (
-      <div className="masthead home-page">
+      <div className="child-masthead home-page">
         <Grid className="width-100" stackable>
           <Grid.Row>
             <Grid.Column width={4} className="right-border">
