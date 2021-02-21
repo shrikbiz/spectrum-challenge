@@ -36,9 +36,10 @@ class HomePage extends Component {
     } catch (err) {
       console.log(err);
     }
-    this.setState({ filteredData: this.state.apiData });
-    this.setState({ genre: GetGenreList(this.state.apiData) });
-    this.totalPage();
+    const { apiData } = this.state;
+    this.setState({ filteredData: apiData });
+    this.setState({ genre: GetGenreList(apiData) });
+    this.totalPage(apiData);
   }
 
   genreToList = (apiData) => {
@@ -48,8 +49,7 @@ class HomePage extends Component {
   };
 
   //total page counter
-  totalPage = () => {
-    let { filteredData } = this.state;
+  totalPage = (filteredData) => {
     let totalPages = Math.floor(filteredData.length / 10);
     totalPages = filteredData.length % 10 ? totalPages + 1 : totalPages;
     const pageList = Array.from(
@@ -76,6 +76,7 @@ class HomePage extends Component {
 
   handleSearch = (value) => {
     this.setState({ searchData: value });
+    value = !value ? "sudden delete string" : value; //if user selects all and delete search area
     this.handleFilters(value, false, false);
   };
 
@@ -93,16 +94,11 @@ class HomePage extends Component {
     let { searchData, genreFilter, stateFilter } = this.state;
     let { apiData } = this.state;
 
-    if (searchParam) searchData = searchParam;
+    if (searchParam)
+      searchData = searchParam === "sudden delete string" ? "" : searchParam;
+    //if the string is deleted immidiately (select all text & delete)
     else if (genreParam.length) genreFilter = genreParam;
     else if (stateParam.length) stateFilter = stateParam;
-    console.log(
-      `🚀 -> HomePage -> searchData, genreFilter, stateFilter`,
-      searchData,
-      genreFilter,
-      stateFilter,
-      apiData.length
-    );
 
     if (searchData) {
       apiData = apiData.filter((data) => {
@@ -124,7 +120,6 @@ class HomePage extends Component {
         }
         return false;
       });
-      console.log(`🚀 -> HomePage -> genreFilter`, apiData);
     }
     if (stateFilter.length) {
       apiData = apiData.filter(({ state }) => {
@@ -133,7 +128,9 @@ class HomePage extends Component {
         return false;
       });
     }
-    this.tablePageData(1, apiData);
+    console.log("apiData", apiData);
+    this.setState({ filteredData: apiData });
+    this.totalPage(apiData);
   };
 
   handlePreviousPage = () => {
