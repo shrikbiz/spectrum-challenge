@@ -7,6 +7,10 @@ class RestaurantTable extends Component {
     this.state = {};
   }
 
+  locationData = ({ city, state }) => {
+    return city + "," + state;
+  };
+
   render() {
     const { tableData, onPreviousPage, onNextPage } = this.props;
     const { tableList, pagesList, currentPage } = tableData;
@@ -17,24 +21,31 @@ class RestaurantTable extends Component {
         <Table celled className="restaurant-table">
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Header</Table.HeaderCell>
-              <Table.HeaderCell>Header</Table.HeaderCell>
-              <Table.HeaderCell>Header</Table.HeaderCell>
+              <Table.HeaderCell>Restaurant Name</Table.HeaderCell>
+              <Table.HeaderCell>Address</Table.HeaderCell>
+              <Table.HeaderCell>Location</Table.HeaderCell>
+              <Table.HeaderCell>Phone Number</Table.HeaderCell>
+              <Table.HeaderCell>Genre</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          {tableList.map((restaurant) => (
-            <Table.Body key={restaurant.id}>
-              <Table.Row>
-                <Table.Cell>{restaurant.name}</Table.Cell>
-                <Table.Cell>{restaurant.index}</Table.Cell>
-                <Table.Cell></Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          ))}
+          {console.log(tableList)}
+          <Table.Body>
+            {tableList.map(
+              ({ name, id, address1, city, state, telephone, genre }) => (
+                <Table.Row key={id}>
+                  <Table.Cell>{name}</Table.Cell>
+                  <Table.Cell>{address1}</Table.Cell>
+                  <Table.Cell>{this.locationData({ city, state })}</Table.Cell>
+                  <Table.Cell>{telephone}</Table.Cell>
+                  <Table.Cell>{genre}</Table.Cell>
+                </Table.Row>
+              )
+            )}
+          </Table.Body>
 
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan="3">
+              <Table.HeaderCell colSpan="5">
                 <Menu floated="right" pagination>
                   <Menu.Item
                     disabled={previousPageLimit}

@@ -76,7 +76,6 @@ class HomePage extends Component {
 
   tablePageData = (pageNumber) => {
     let { filteredData } = this.state;
-    console.log("🚀  HomePage ~ pageNumber", pageNumber, filteredData);
     let firstItemIndex = pageNumber * 10 - 10;
     let pageListItem = [];
     let index = firstItemIndex;
@@ -90,7 +89,6 @@ class HomePage extends Component {
   };
 
   handlePreviousPage = () => {
-    // console.log("onPrevious", this);
     let currentPage = this.state.currentPage - 1;
     this.setState({ currentPage: currentPage });
     this.tablePageData(currentPage);
