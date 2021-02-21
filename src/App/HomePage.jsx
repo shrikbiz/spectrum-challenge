@@ -10,11 +10,15 @@ class HomePage extends Component {
   constructor() {
     super();
     this.state = {
+      //inital data from API
       apiData: [],
-      genres: [],
+      //data after applying search and filters
       filteredData: [],
+      //10 table display list as per page
+      displayTableList: [],
+      genres: [],
       pageCountList: [],
-      currentPage: 0,
+      currentPage: 1,
     };
   }
 
@@ -32,39 +36,74 @@ class HomePage extends Component {
     } catch (err) {
       console.log(err);
     }
-    //creating genre list
     this.getGenre();
     this.allFilter();
     this.totalPage();
   }
 
-  getGenre() {
+  getGenre = () => {
     //GetGenre is external function
     this.setState({ genre: GetGenreList(this.state.apiData) });
-  }
+  };
 
-  allFilter() {
+  addIndex = () => {
     let { apiData } = this.state;
+    for (let index in apiData) {
+      apiData[index].index = index;
+    }
+    return apiData;
+  };
+
+  allFilter = () => {
     //apiData will be filtered before passing to state.filteredData
-    this.setState({ filteredData: apiData });
-  }
+    this.setState({ filteredData: this.addIndex() });
+  };
 
   //total page counter
-  totalPage() {
+  totalPage = () => {
     let { filteredData } = this.state;
     let totalPages = Math.floor(filteredData.length / 10);
     totalPages = filteredData.length % 10 ? totalPages + 1 : totalPages;
-    let pageList = Array.from(Array(totalPages).keys());
-    this.setState({ pageCountList: pageList });
-    this.tablePageData(0);
-  }
+    let pageList = Array.from(
+      Array(totalPages)
+        .fill()
+        .map((_, index) => 1 + index)
+    );
+    this.setState({ pageCountList: pageList, currentPage: 1 });
+    //as many times totalPage is called, the tablePageData will become 0
+    this.tablePageData(1);
+  };
 
-  // tablePageData(pageNumber) {
+  tablePageData = (pageNumber) => {
+    let { filteredData } = this.state;
+    console.log("🚀  HomePage ~ pageNumber", pageNumber, filteredData);
+    let firstItemIndex = pageNumber * 10 - 10;
+    let pageListItem = [];
+    let index = firstItemIndex;
+    while (index < firstItemIndex + 10) {
+      if (filteredData[index]) {
+        pageListItem.push(filteredData[index]);
+      } else break;
+      index++;
+    }
+    this.setState({ displayTableList: pageListItem });
+  };
 
-  // }
+  handlePreviousPage = () => {
+    // console.log("onPrevious", this);
+    let currentPage = this.state.currentPage - 1;
+    this.setState({ currentPage: currentPage });
+    this.tablePageData(currentPage);
+  };
+
+  handleNextPage = () => {
+    let currentPage = this.state.currentPage + 1;
+    this.setState({ currentPage: currentPage });
+    this.tablePageData(currentPage);
+  };
 
   render() {
-    let { genre, filteredData, pageCountList } = this.state;
+    let { genre, displayTableList, pageCountList, currentPage } = this.state;
     return (
       <div className="masthead home-page">
         <Grid className="width-100" stackable>
@@ -74,7 +113,13 @@ class HomePage extends Component {
             </Grid.Column>
             <Grid.Column width={12}>
               <RestaurantTable
-                tableData={{ tableList: filteredData, pages: pageCountList }}
+                tableData={{
+                  tableList: displayTableList,
+                  pagesList: pageCountList,
+                  currentPage: currentPage,
+                }}
+                onPreviousPage={this.handlePreviousPage}
+                onNextPage={this.handleNextPage}
               />
             </Grid.Column>
           </Grid.Row>
