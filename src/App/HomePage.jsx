@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Icon, Container, Grid, Button, Divider } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import RestaurantTable from "./RestaurantTable";
 import FilterBox from "./FilterBox";
 import axios from "axios";
@@ -128,7 +128,6 @@ class HomePage extends Component {
         return false;
       });
     }
-    console.log("apiData", apiData);
     this.setState({ filteredData: apiData });
     this.totalPage(apiData);
   };

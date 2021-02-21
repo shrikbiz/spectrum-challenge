@@ -3,7 +3,6 @@ import { Dropdown } from "semantic-ui-react";
 
 const Filter = ({ list, filterName, onFilterSelect }) => {
   const onSelect = (value) => {
-    console.log(`🚀 -> onSelect -> value`, value);
     onFilterSelect(value);
   };
 

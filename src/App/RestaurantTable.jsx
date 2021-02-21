@@ -36,7 +36,14 @@ class RestaurantTable extends Component {
                   <Table.Cell>{address1}</Table.Cell>
                   <Table.Cell>{this.locationData({ city, state })}</Table.Cell>
                   <Table.Cell>{telephone}</Table.Cell>
-                  <Table.Cell>{genre}</Table.Cell>
+                  <Table.Cell>
+                    {genre.map((eachGenre, index) => (
+                      <span key={index}>
+                        {eachGenre}
+                        {index !== genre.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                  </Table.Cell>
                 </Table.Row>
               )
             )}
