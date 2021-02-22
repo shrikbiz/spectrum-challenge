@@ -1,31 +1,77 @@
 import React, { Component } from "react";
-import { Table, Menu, Icon } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { Table, Menu, Icon, Message } from "semantic-ui-react";
+import { SortedColumnList } from "../helpers/SortedColumnList";
+import SortingIcon from "./SortingIcon";
 
-class RestaurantTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  locationData = ({ city, state }) => {
-    return city + "," + state;
+const RestaurantTable = ({
+  tableData,
+  onPreviousPage,
+  onNextPage,
+  sortedColumnData,
+  onSort,
+}) => {
+  let handleSortingEvent = (data) => {
+    onSort(data);
   };
-
-  render() {
-    const { tableData, onPreviousPage, onNextPage } = this.props;
-    const { tableList, pagesList, currentPage } = tableData;
-    const previousPageLimit = pagesList[0] === currentPage;
-    const nextPageLimit = pagesList[pagesList.length - 1] === currentPage;
-    return (
-      <div>
+  const { tableList, pagesList, currentPage } = tableData;
+  const previousPageLimit = pagesList[0] === currentPage;
+  const nextPageLimit = pagesList[pagesList.length - 1] === currentPage;
+  return (
+    <div>
+      {tableList.length ? (
         <Table celled className="restaurant-table">
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Restaurant Name</Table.HeaderCell>
-              <Table.HeaderCell>Address</Table.HeaderCell>
-              <Table.HeaderCell>Location</Table.HeaderCell>
-              <Table.HeaderCell>Phone Number</Table.HeaderCell>
-              <Table.HeaderCell>Genre</Table.HeaderCell>
+              <Table.HeaderCell rowSpan="2">
+                Restaurant Name{" "}
+                <SortingIcon
+                  sortedColumnData={{
+                    sortedColumnData,
+                    columnName: SortedColumnList[0],
+                  }}
+                  onSort={handleSortingEvent}
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell colSpan="3">Location</Table.HeaderCell>
+              <Table.HeaderCell rowSpan="2">
+                Phone Number <span></span>
+              </Table.HeaderCell>
+              <Table.HeaderCell rowSpan="2">
+                Genre <span> </span>
+              </Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.HeaderCell>
+                Address{" "}
+                <SortingIcon
+                  sortedColumnData={{
+                    sortedColumnData,
+                    columnName: SortedColumnList[1],
+                  }}
+                  onSort={handleSortingEvent}
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                City
+                <SortingIcon
+                  sortedColumnData={{
+                    sortedColumnData,
+                    columnName: SortedColumnList[2],
+                  }}
+                  onSort={handleSortingEvent}
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                State
+                <SortingIcon
+                  sortedColumnData={{
+                    sortedColumnData,
+                    columnName: SortedColumnList[3],
+                  }}
+                  onSort={handleSortingEvent}
+                />
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -34,7 +80,8 @@ class RestaurantTable extends Component {
                 <Table.Row key={id}>
                   <Table.Cell>{name}</Table.Cell>
                   <Table.Cell>{address1}</Table.Cell>
-                  <Table.Cell>{this.locationData({ city, state })}</Table.Cell>
+                  <Table.Cell>{city}</Table.Cell>
+                  <Table.Cell>{state}</Table.Cell>
                   <Table.Cell>{telephone}</Table.Cell>
                   <Table.Cell>
                     {genre.map((eachGenre, index) => (
@@ -51,7 +98,7 @@ class RestaurantTable extends Component {
 
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan="5">
+              <Table.HeaderCell colSpan="6">
                 <Menu floated="right" pagination>
                   <Menu.Item
                     disabled={previousPageLimit}
@@ -74,9 +121,15 @@ class RestaurantTable extends Component {
             </Table.Row>
           </Table.Footer>
         </Table>
-      </div>
-    );
-  }
-}
+      ) : (
+        <Message warning>
+          <Message.Header style={{ textAlign: "center" }}>
+            No Result were found
+          </Message.Header>
+        </Message>
+      )}
+    </div>
+  );
+};
 
 export default RestaurantTable;

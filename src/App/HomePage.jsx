@@ -4,7 +4,9 @@ import { Grid } from "semantic-ui-react";
 import RestaurantTable from "./RestaurantTable";
 import FilterBox from "./FilterBox";
 import axios from "axios";
-import { GetGenreList } from "./GetGenreList";
+import { GetGenreList } from "../helpers/GetGenreList";
+import { RestructureData } from "../helpers/RestructureData";
+import { SortedColumnList } from "../helpers/SortedColumnList";
 
 class HomePage extends Component {
   constructor() {
@@ -19,6 +21,8 @@ class HomePage extends Component {
       searchData: "", //stores searched value
       genreFilter: [], //stores list of genre selected in filtered
       stateFilter: [], //stores list of states selected in filtered
+      sortedColumn: "",
+      isIncrement: true,
     };
   }
 
@@ -32,19 +36,41 @@ class HomePage extends Component {
         }
       );
       // assigning resp to apiData in try catch, so that apiData remains an array
-      this.setState({ apiData: this.genreToList(resp.data) });
+      this.setState({ apiData: RestructureData(resp.data) });
     } catch (err) {
       console.log(err);
     }
-    const { apiData } = this.state;
+    let { apiData } = this.state;
+    apiData = this.handleSorting(apiData, SortedColumnList[0]); //name, address1, location(city + state), telephone
     this.setState({ filteredData: apiData });
     this.setState({ genre: GetGenreList(apiData) });
-    this.totalPage(apiData);
+    this.totalPage(apiData); //also inclues data division as per page
   }
 
-  genreToList = (apiData) => {
-    for (let item in apiData)
-      apiData[item].genre = apiData[item].genre.split(",");
+  onColumnSorting = ({ columnName }) => {
+    let data = this.handleSorting(this.state.filteredData, columnName);
+    this.setState({
+      filterData: data,
+    });
+    this.tablePageData(1, data);
+  };
+
+  handleSorting = (apiData, columnName) => {
+    let { sortedColumn } = this.state;
+    if (columnName === sortedColumn) {
+      this.setState({ isIncrement: !this.state.isIncrement });
+      apiData = apiData.reverse();
+    } else {
+      this.setState({ sortedColumn: columnName, isIncrement: true });
+      if (columnName === SortedColumnList[0])
+        apiData.sort((a, b) => (a.name < b.name ? -1 : 1));
+      else if (columnName === SortedColumnList[1])
+        apiData.sort((a, b) => (a.address1 < b.address1 ? -1 : 1));
+      else if (columnName === SortedColumnList[2])
+        apiData.sort((a, b) => (a.city < b.city ? -1 : 1));
+      else if (columnName === SortedColumnList[3])
+        apiData.sort((a, b) => (a.state < b.state ? -1 : 1));
+    }
     return apiData;
   };
 
@@ -145,7 +171,14 @@ class HomePage extends Component {
   };
 
   render() {
-    let { genre, displayTableList, pageCountList, currentPage } = this.state;
+    let {
+      genre,
+      displayTableList,
+      pageCountList,
+      currentPage,
+      sortedColumn,
+      isIncrement,
+    } = this.state;
     return (
       <div className="child-masthead home-page">
         <Grid className="width-100" stackable>
@@ -165,8 +198,10 @@ class HomePage extends Component {
                   pagesList: pageCountList,
                   currentPage: currentPage,
                 }}
+                sortedColumnData={{ sortedColumn, isIncrement }}
                 onPreviousPage={this.handlePreviousPage}
                 onNextPage={this.handleNextPage}
+                onSort={this.onColumnSorting}
               />
             </Grid.Column>
           </Grid.Row>
