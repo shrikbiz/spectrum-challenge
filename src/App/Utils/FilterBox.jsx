@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Icon, Grid, Button, Divider } from "semantic-ui-react";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
-import { States } from "../helpers/usState";
+import { States } from "../../helpers/usState";
 
 const FilterBox = ({
   genreList,

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Table, Menu, Icon, Message } from "semantic-ui-react";
-import { SortedColumnList } from "../helpers/SortedColumnList";
-import SortingIcon from "./SortingIcon";
+import { SortedColumnList } from "../../helpers/SortedColumnList";
+import SortingIcon from "../Utils/SortingIcon";
 
 const RestaurantTable = ({
   tableData,

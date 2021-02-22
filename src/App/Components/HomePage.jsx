@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
-import RestaurantTable from "./RestaurantTable";
-import FilterBox from "./FilterBox";
+import RestaurantTable from "../Features/RestaurantTable";
+import FilterBox from "../Utils/FilterBox";
 import axios from "axios";
-import { GetGenreList } from "../helpers/GetGenreList";
-import { RestructureData } from "../helpers/RestructureData";
-import { SortedColumnList } from "../helpers/SortedColumnList";
+import { GetGenreList } from "../../helpers/GetGenreList";
+import { RestructureData } from "../../helpers/RestructureData";
+import { SortedColumnList } from "../../helpers/SortedColumnList";
 
 class HomePage extends Component {
   constructor() {

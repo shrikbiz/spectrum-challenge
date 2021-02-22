@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
-import FrontPage from "./FrontPage";
-import NavBar from "./NavBar";
-import HomePage from "./HomePage";
+import FrontPage from "./Components/FrontPage";
+import NavBar from "./Components/NavBar";
+import HomePage from "./Components/HomePage";
 
 class App extends Component {
   render() {
