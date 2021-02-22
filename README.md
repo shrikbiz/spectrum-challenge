@@ -25,4 +25,4 @@ For styling, Semantic-UI-React library has been used.
 
 ## Features:
 - Initally user will be on Front Page, where you will find array to direct user to HomePage
-<adding>
+<adding...>
