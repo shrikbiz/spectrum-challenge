@@ -1,24 +1,28 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Icon, Container, Grid, Button, Divider } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import RestaurantTable from "./RestaurantTable";
-import FilterBar from "./FilterBar";
+import FilterBox from "./FilterBox";
 import axios from "axios";
-import { GetGenreList } from "./GetGenreList";
+import { GetGenreList } from "../helpers/GetGenreList";
+import { RestructureData } from "../helpers/RestructureData";
+import { SortedColumnList } from "../helpers/SortedColumnList";
 
 class HomePage extends Component {
   constructor() {
     super();
     this.state = {
-      //inital data from API
-      apiData: [],
-      //data after applying search and filters
-      filteredData: [],
-      //10 table display list as per page
-      displayTableList: [],
+      apiData: [], //inital data from API
+      filteredData: [], //data after applying search and filters
+      displayTableList: [], //10 table display list as per page
       genres: [],
       pageCountList: [],
       currentPage: 1,
+      searchData: "", //stores searched value
+      genreFilter: [], //stores list of genre selected in filtered
+      stateFilter: [], //stores list of states selected in filtered
+      sortedColumn: "",
+      isIncrement: true,
     };
   }
 
@@ -32,82 +36,160 @@ class HomePage extends Component {
         }
       );
       // assigning resp to apiData in try catch, so that apiData remains an array
-      this.setState({ apiData: resp.data });
+      this.setState({ apiData: RestructureData(resp.data) });
     } catch (err) {
       console.log(err);
     }
-    this.getGenre();
-    this.allFilter();
-    this.totalPage();
+    let { apiData } = this.state;
+    apiData = this.handleSorting(apiData, SortedColumnList[0]); //name, address1, location(city + state), telephone
+    this.setState({ filteredData: apiData });
+    this.setState({ genre: GetGenreList(apiData) });
+    this.totalPage(apiData); //also inclues data division as per page
   }
 
-  getGenre = () => {
-    //GetGenre is external function
-    this.setState({ genre: GetGenreList(this.state.apiData) });
+  onColumnSorting = ({ columnName }) => {
+    let data = this.handleSorting(this.state.filteredData, columnName);
+    this.setState({
+      filterData: data,
+    });
+    this.tablePageData(1, data);
   };
 
-  addIndex = () => {
-    let { apiData } = this.state;
-    for (let index in apiData) {
-      apiData[index].index = index;
+  handleSorting = (apiData, columnName) => {
+    let { sortedColumn } = this.state;
+    if (columnName === sortedColumn) {
+      this.setState({ isIncrement: !this.state.isIncrement });
+      apiData = apiData.reverse();
+    } else {
+      this.setState({ sortedColumn: columnName, isIncrement: true });
+      if (columnName === SortedColumnList[0])
+        apiData.sort((a, b) => (a.name < b.name ? -1 : 1));
+      else if (columnName === SortedColumnList[1])
+        apiData.sort((a, b) => (a.address1 < b.address1 ? -1 : 1));
+      else if (columnName === SortedColumnList[2])
+        apiData.sort((a, b) => (a.city < b.city ? -1 : 1));
+      else if (columnName === SortedColumnList[3])
+        apiData.sort((a, b) => (a.state < b.state ? -1 : 1));
     }
     return apiData;
   };
 
-  allFilter = () => {
-    //apiData will be filtered before passing to state.filteredData
-    this.setState({ filteredData: this.addIndex() });
-  };
-
   //total page counter
-  totalPage = () => {
-    let { filteredData } = this.state;
+  totalPage = (filteredData) => {
     let totalPages = Math.floor(filteredData.length / 10);
     totalPages = filteredData.length % 10 ? totalPages + 1 : totalPages;
-    let pageList = Array.from(
+    const pageList = Array.from(
       Array(totalPages)
         .fill()
         .map((_, index) => 1 + index)
     );
-    this.setState({ pageCountList: pageList, currentPage: 1 });
-    //as many times totalPage is called, the tablePageData will become 0
-    this.tablePageData(1);
+    this.setState({ pageCountList: pageList });
+    this.tablePageData(1, filteredData);
   };
 
-  tablePageData = (pageNumber) => {
-    let { filteredData } = this.state;
+  tablePageData = (pageNumber, filteredData) => {
+    this.setState({ currentPage: pageNumber });
     let firstItemIndex = pageNumber * 10 - 10;
     let pageListItem = [];
     let index = firstItemIndex;
     while (index < firstItemIndex + 10) {
-      if (filteredData[index]) {
-        pageListItem.push(filteredData[index]);
-      } else break;
+      if (filteredData[index]) pageListItem.push(filteredData[index]);
+      else break;
       index++;
     }
     this.setState({ displayTableList: pageListItem });
   };
 
+  handleSearch = (value) => {
+    this.setState({ searchData: value });
+    value = !value ? "sudden delete string" : value; //if user selects all and delete search area
+    this.handleFilters(value, false, false);
+  };
+
+  handleGenreFilter = (value) => {
+    this.setState({ genreFilter: value });
+    this.handleFilters(false, value, false);
+  };
+
+  handleStateFilter = (value) => {
+    this.setState({ stateFilter: value });
+    this.handleFilters(false, false, value);
+  };
+
+  handleFilters = (searchParam, genreParam, stateParam) => {
+    let { searchData, genreFilter, stateFilter } = this.state;
+    let { apiData } = this.state;
+
+    if (searchParam)
+      searchData = searchParam === "sudden delete string" ? "" : searchParam;
+    //if the string is deleted immidiately (select all text & delete)
+    else if (genreParam.length) genreFilter = genreParam;
+    else if (stateParam.length) stateFilter = stateParam;
+
+    if (searchData) {
+      apiData = apiData.filter((data) => {
+        for (let genre of data.genre)
+          if (genre.toLowerCase().includes(searchData.toLowerCase()))
+            return true;
+        return (
+          data.name.toLowerCase().includes(searchData.toLowerCase()) ||
+          data.city.toLowerCase().includes(searchData.toLowerCase())
+        );
+      });
+    }
+    if (genreFilter.length) {
+      apiData = apiData.filter((data) => {
+        for (let genre of data.genre) {
+          for (let eachSelectedGenre of genreFilter)
+            if (genre.toLowerCase() === eachSelectedGenre.toLowerCase())
+              return true;
+        }
+        return false;
+      });
+    }
+    if (stateFilter.length) {
+      apiData = apiData.filter(({ state }) => {
+        for (let selectedState of stateFilter)
+          if (selectedState.toLowerCase() === state.toLowerCase()) return true;
+        return false;
+      });
+    }
+    this.setState({ filteredData: apiData });
+    this.totalPage(apiData);
+  };
+
   handlePreviousPage = () => {
     let currentPage = this.state.currentPage - 1;
     this.setState({ currentPage: currentPage });
-    this.tablePageData(currentPage);
+    this.tablePageData(currentPage, this.state.filteredData);
   };
 
   handleNextPage = () => {
     let currentPage = this.state.currentPage + 1;
     this.setState({ currentPage: currentPage });
-    this.tablePageData(currentPage);
+    this.tablePageData(currentPage, this.state.filteredData);
   };
 
   render() {
-    let { genre, displayTableList, pageCountList, currentPage } = this.state;
+    let {
+      genre,
+      displayTableList,
+      pageCountList,
+      currentPage,
+      sortedColumn,
+      isIncrement,
+    } = this.state;
     return (
       <div className="child-masthead home-page">
         <Grid className="width-100" stackable>
           <Grid.Row>
             <Grid.Column width={4} className="right-border">
-              <FilterBar genreList={genre} />
+              <FilterBox
+                onSearchBar={this.handleSearch}
+                onGenreFilter={this.handleGenreFilter}
+                onStateFilter={this.handleStateFilter}
+                genreList={genre}
+              />
             </Grid.Column>
             <Grid.Column width={12}>
               <RestaurantTable
@@ -116,8 +198,10 @@ class HomePage extends Component {
                   pagesList: pageCountList,
                   currentPage: currentPage,
                 }}
+                sortedColumnData={{ sortedColumn, isIncrement }}
                 onPreviousPage={this.handlePreviousPage}
                 onNextPage={this.handleNextPage}
+                onSort={this.onColumnSorting}
               />
             </Grid.Column>
           </Grid.Row>
