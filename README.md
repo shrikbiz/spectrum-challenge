@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Getting Started with my app - Spectrum Challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This app is created using React. Access this app by clicking [here](https://wizardly-morse-eaf334.netlify.app)
 
 ## Available Scripts
 
@@ -8,63 +8,67 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You can clone the app using: \
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+git clone <<Repo https link>>
+```
+
+Then you can install npm: \
+
+```
+npm install
+```
+
+Once npm is installed you can run
+
+```
+npm run serve
+```
+
+you will be able to look at project on [https://localhost:3000](https://localhost:3000).
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Test files are not yet added, due to lack of time.\
+This app has been deployed for on Netlify and Pipelined with [Buddy.work](https://buddy.works/).\
+The Deployed app can be accessed using this [Link](https://wizardly-morse-eaf334.netlify.app)\
 
-### `npm run build`
+## Libraries:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- This app is build using React library.
+- For styling, Semantic-UI-React library has been used.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Pages:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Front Page
+- Home Page
 
-### `npm run eject`
+## Features:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Initally user will be on Front Page, where you will find arrow to direct user to HomePage
+- The API provided is shown in form of table
+- User can sort table by Restaurant Name, Address, City, State
+- Table is using pagination with each page with 10 entries of restaurents.
+- Above table, a message will be displaying always for number of total result found
+- If its first page, the previous button will be disabled. If its last page, the next button will be disabled.
+- You can search in Search bar, that is on left bar in the screen. Search will show result as if it matches full or partially with Restaurant Name, City, State or Genre. Result will change as per text is type (The requirment said that the result should display when enter is hit. If that needs to be implemented, we have to set onChange event when enter(keycode: 13) is triggered)
+- User can set additional features by clicking button with filter icon (funnel icon). That will open the filter section, where you can enter and find the type or genre and state in the filter box (text area + dropdown).
+- The result when filtered, will reflect result will atleast one of the Genre or State selected in filter.
+- User can use Navigation Bar to switch from Homepage to Frontpage and vice versa.
+- User and use all three features - Search Bar, Genre Filter & State Filter.
+- The table is using Semantic UI components Table, Table.Row, Table.HeaderCell, Table.Cell, which under the hood is using HTML tags such as table, tr, th, td respectively. Because its the same, we are using same attributes like colspan.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Un-Done Work:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+There could be number of things that could have been done if there was more time to complete this project.
+Some of those ideas are:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Testing: Small or big, an app needs unit testing for proper implementation. The project is equiped with testing libraries - Mocha & Chai. Additionally we could have performed Cypress for e2e testing.
+- TypeScrpt: This project was initiated with Javascript, but for type detection and advance error detection for types could have been implemented using TypeScript.
+- Redux store management: As app grows more, it need store management which component can communicate (pass data between component) easily. Redux-Thunk implementation would have make that communitcation efficient.
+- Additional features: Many additional features could have been added, filtering on other attributes, using lat-long to show the location of Restaurant on Google-Maps using google-map library, etc.
 
-## Learn More
+I hope you liked the project. Feel free to contact author at shrikantpatel.js@gmail.com
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Follow my Instagram Page [Everything FrontEnd](https://www.instagram.com/shrikbiz.js/) (a new venture) & medium [shrikbiz](shrikbiz.medium.com).

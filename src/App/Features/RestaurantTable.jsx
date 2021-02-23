@@ -53,7 +53,7 @@ const RestaurantTable = ({
                 />
               </Table.HeaderCell>
               <Table.HeaderCell>
-                City
+                City{" "}
                 <SortingIcon
                   sortedColumnData={{
                     sortedColumnData,
@@ -63,7 +63,7 @@ const RestaurantTable = ({
                 />
               </Table.HeaderCell>
               <Table.HeaderCell>
-                State
+                State{" "}
                 <SortingIcon
                   sortedColumnData={{
                     sortedColumnData,
@@ -122,9 +122,10 @@ const RestaurantTable = ({
           </Table.Footer>
         </Table>
       ) : (
-        <Message warning>
+        <Message warning style={{ marginTop: "50px" }}>
           <Message.Header style={{ textAlign: "center" }}>
-            No Result were found
+            <Icon color="red" name="warning circle" />
+            No Results were found
           </Message.Header>
         </Message>
       )}
