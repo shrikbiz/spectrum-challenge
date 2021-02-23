@@ -8,13 +8,13 @@ In the project directory, you can run:
 
 ### `npm start`
 
-You can clone the app using: \
+You can clone the app using: 
 
 ```
 git clone <<Repo https link>>
 ```
 
-Then you can install npm: \
+Then you can install npm: 
 
 ```
 npm install
@@ -32,7 +32,7 @@ you will be able to look at project on [https://localhost:3000](https://localhos
 
 Test files are not yet added, due to lack of time.\
 This app has been deployed for on Netlify and Pipelined with [Buddy.work](https://buddy.works/).\
-The Deployed app can be accessed using this [Link](https://wizardly-morse-eaf334.netlify.app)\
+The Deployed app can be accessed using this [Link](https://wizardly-morse-eaf334.netlify.app)
 
 ## Libraries:
 
@@ -59,10 +59,10 @@ The Deployed app can be accessed using this [Link](https://wizardly-morse-eaf334
 - User and use all three features - Search Bar, Genre Filter & State Filter.
 - The table is using Semantic UI components Table, Table.Row, Table.HeaderCell, Table.Cell, which under the hood is using HTML tags such as table, tr, th, td respectively. Because its the same, we are using same attributes like colspan.
 
-## Un-Done Work:
+## Work that can be done:
 
-There could be number of things that could have been done if there was more time to complete this project.
-Some of those ideas are:
+There are number of things that can be done with this porject.
+Some of those things are that can be done if time was not a constrain:
 
 - Testing: Small or big, an app needs unit testing for proper implementation. The project is equiped with testing libraries - Mocha & Chai. Additionally we could have performed Cypress for e2e testing.
 - TypeScrpt: This project was initiated with Javascript, but for type detection and advance error detection for types could have been implemented using TypeScript.
