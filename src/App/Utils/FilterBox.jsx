@@ -9,8 +9,10 @@ const FilterBox = ({
   onSearchBar,
   onGenreFilter,
   onStateFilter,
+  handleFilterButton,
+  isFilter,
 }) => {
-  const [isFilter, setFilter] = useState(false);
+  // const [isFilter, setFilter] = useState(false);
   const selectedGenre = (value) => {
     onGenreFilter(value);
   };
@@ -20,6 +22,9 @@ const FilterBox = ({
   const handleSearch = (value) => {
     onSearchBar(value);
   };
+  const handleFilter = () => {
+    handleFilterButton();
+  };
   return (
     <>
       <Grid className="width-100" stackable>
@@ -27,14 +32,13 @@ const FilterBox = ({
           <Grid.Column width={14}>
             {/* Search */}
             <SearchBar onSearch={handleSearch} />
-            <span>Press enter to Search</span>
           </Grid.Column>
           <Grid.Column width={2}>
             {/* Filter On|Off Button */}
             <Button
               icon
               color={isFilter ? "grey" : "black"}
-              onClick={() => setFilter(!isFilter)}
+              onClick={() => handleFilter()}
             >
               <Icon name="filter" />
             </Button>

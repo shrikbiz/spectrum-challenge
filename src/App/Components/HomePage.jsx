@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { Grid } from "semantic-ui-react";
+import { Grid, Label, Message } from "semantic-ui-react";
 import RestaurantTable from "../Features/RestaurantTable";
 import FilterBox from "../Utils/FilterBox";
 import axios from "axios";
 import { GetGenreList } from "../../helpers/GetGenreList";
 import { RestructureData } from "../../helpers/RestructureData";
 import { SortedColumnList } from "../../helpers/SortedColumnList";
+import { SearchAndFilter } from "../../helpers/SearchAndFilter";
 
 class HomePage extends Component {
   constructor() {
@@ -23,6 +24,7 @@ class HomePage extends Component {
       stateFilter: [], //stores list of states selected in filtered
       sortedColumn: "",
       isIncrement: true,
+      isFilter: false, //filter is initally off (in-active)
     };
   }
 
@@ -35,16 +37,16 @@ class HomePage extends Component {
           headers: { authorization: "Api-Key q3MNxtfep8Gt" },
         }
       );
+      let { data } = resp;
+      data = this.handleSorting(data, SortedColumnList[0]); //name, address1, location(city + state), telephone
       // assigning resp to apiData in try catch, so that apiData remains an array
-      this.setState({ apiData: RestructureData(resp.data) });
+      this.setState({ apiData: RestructureData(data) });
+      this.setState({ filteredData: data });
+      this.setState({ genre: GetGenreList(data) });
+      this.totalPage(data); //also inclues data division as per page
     } catch (err) {
       console.log(err);
     }
-    let { apiData } = this.state;
-    apiData = this.handleSorting(apiData, SortedColumnList[0]); //name, address1, location(city + state), telephone
-    this.setState({ filteredData: apiData });
-    this.setState({ genre: GetGenreList(apiData) });
-    this.totalPage(apiData); //also inclues data division as per page
   }
 
   onColumnSorting = ({ columnName }) => {
@@ -123,37 +125,10 @@ class HomePage extends Component {
     if (searchParam)
       searchData = searchParam === "sudden delete string" ? "" : searchParam;
     //if the string is deleted immidiately (select all text & delete)
-    else if (genreParam.length) genreFilter = genreParam;
-    else if (stateParam.length) stateFilter = stateParam;
-
-    if (searchData) {
-      apiData = apiData.filter((data) => {
-        for (let genre of data.genre)
-          if (genre.toLowerCase().includes(searchData.toLowerCase()))
-            return true;
-        return (
-          data.name.toLowerCase().includes(searchData.toLowerCase()) ||
-          data.city.toLowerCase().includes(searchData.toLowerCase())
-        );
-      });
-    }
-    if (genreFilter.length) {
-      apiData = apiData.filter((data) => {
-        for (let genre of data.genre) {
-          for (let eachSelectedGenre of genreFilter)
-            if (genre.toLowerCase() === eachSelectedGenre.toLowerCase())
-              return true;
-        }
-        return false;
-      });
-    }
-    if (stateFilter.length) {
-      apiData = apiData.filter(({ state }) => {
-        for (let selectedState of stateFilter)
-          if (selectedState.toLowerCase() === state.toLowerCase()) return true;
-        return false;
-      });
-    }
+    else if (genreParam) genreFilter = genreParam.length ? genreParam : [];
+    else if (stateParam) stateFilter = stateParam.length ? stateParam : [];
+    //helper function for searchbar and filter
+    apiData = SearchAndFilter(searchData, apiData, genreFilter, stateFilter);
     this.setState({ filteredData: apiData });
     this.totalPage(apiData);
   };
@@ -170,6 +145,19 @@ class HomePage extends Component {
     this.tablePageData(currentPage, this.state.filteredData);
   };
 
+  handleFilterButton = () => {
+    const { isFilter } = this.state;
+    if (isFilter) {
+      this.setState({
+        genreFilter: [],
+        stateFilter: [],
+      });
+      this.handleGenreFilter([]);
+      this.handleStateFilter([]);
+    }
+    this.setState({ isFilter: !isFilter });
+  };
+
   render() {
     let {
       genre,
@@ -178,20 +166,31 @@ class HomePage extends Component {
       currentPage,
       sortedColumn,
       isIncrement,
+      isFilter,
+      filteredData,
     } = this.state;
     return (
       <div className="child-masthead home-page">
         <Grid className="width-100" stackable>
           <Grid.Row>
             <Grid.Column width={4} className="right-border">
+              <h2>Search & Filter</h2>
               <FilterBox
                 onSearchBar={this.handleSearch}
                 onGenreFilter={this.handleGenreFilter}
                 onStateFilter={this.handleStateFilter}
                 genreList={genre}
+                isFilter={isFilter}
+                handleFilterButton={this.handleFilterButton}
               />
             </Grid.Column>
             <Grid.Column width={12}>
+              <Message color="teal">
+                Result{filteredData.length < 2 ? "" : "s"} Found{" "}
+                <Label circular color="teal">
+                  {filteredData.length}
+                </Label>
+              </Message>
               <RestaurantTable
                 tableData={{
                   tableList: displayTableList,
